@@ -13,8 +13,8 @@ class SSDConfig():
         self.NUM_DATALOADER_WORKERS = 8  # 
         self.NUM_ITERATIONS_TRAIN = 5000  # number of iterations to train
         self.LEARNING_RATE = 0.01
-        self.DECAY_LR_AT = [0.4,0.75] # fraction of total iteration where LR is decayed
-        self.DECAY_FRAC = 0.5  # decay LR by this fraction of the current learning rate
+        self.DECAY_LR_AT = [0.1,0.4,0.4,0.75] # fraction of total iteration where LR is decayed
+        self.DECAY_FRAC = 0.9  # decay LR by this fraction of the current learning rate
         self.WEIGHT_DECAY = 5e-4
         self.MOMENTUM = 0.95
         self.PRINT_FREQ = 3
@@ -107,5 +107,5 @@ class SSDConfig():
         # Loss configuration
         # ---- -------------
         self.MBL_threshold = 0.5
-        self.MBL_neg_pos_ratio = 3
+        self.MBL_neg_pos_ratio = 1
         self.MBL_alpha = 1.

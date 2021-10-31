@@ -31,7 +31,7 @@ else:
 
 
 
-fname = "checkpoint_ssd_.300.2.4"
+fname = "checkpoint_ssd_imgaug_.300.1.1"
 
 config = SSDConfig()
 # device = "cpu"#config.DEVICE
@@ -86,84 +86,86 @@ model.eval()
 uncomment the following for calculating mAP on test set
 """
 
-min_score=0.1
-max_overlap=0.5
+# min_score=0.25
+# max_overlap=0.2
 
 
 # dataloader
-dataset = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=False,return_orig=True)
-dataloader = DataLoader(dataset,
-                        shuffle=False,
-                        collate_fn=collate_fn,
-                        batch_size=2,
-                        num_workers=config.NUM_DATALOADER_WORKERS)
-
-
-dataset = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=False,return_orig=True)
-gt_boxes = []
-gt_labels = []
-pred_boxes = []
-pred_labels = []
-pred_scores = []
-for batch in dataloader:
-    orig_images = batch[0].to(device)
-    orig_boxes = [b.to(device) for b in batch[1]] 
-    orig_labels = [l.to(device) for l in batch[2]]
-    with torch.no_grad():
-        loc_gcxgcy, scores = model(orig_images)
-        boxes, labels, scores = model.detect_objects(loc_gcxgcy, scores, min_score=min_score, max_overlap=max_overlap)
-    gt_boxes.extend(orig_boxes)
-    gt_labels.extend(orig_labels)
-    pred_boxes.extend(boxes)
-    pred_labels.extend(labels)
-    pred_scores.extend(scores)
-AP, mAP, Recall = calc_mAP(gt_boxes, gt_labels, pred_boxes, pred_labels, pred_scores)
-
-
-print(f"Avg Precision: {AP.item()}")
-print(f"MeanAvg Precision: {mAP}")
-print(f"Avg Recall: {torch.mean(Recall).item()}")
-
-
-
-
-
-# min_score=0.1
-# max_overlap=0.4
 # dataset = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=False,return_orig=True)
+# dataloader = DataLoader(dataset,
+#                         shuffle=False,
+#                         collate_fn=collate_fn,
+#                         batch_size=2,
+#                         num_workers=config.NUM_DATALOADER_WORKERS)
 
-# for k in tqdm(range(len(os.listdir("ShelfImages/test/")))):
-#     img_tensor, og_bboxes, og_labels, og_image = dataset.__getitem__(k)
+
+# dataset = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=False,return_orig=True)
+# gt_boxes = []
+# gt_labels = []
+# pred_boxes = []
+# pred_labels = []
+# pred_scores = []
+# for batch in dataloader:
+#     orig_images = batch[0].to(device)
+#     orig_boxes = [b.to(device) for b in batch[1]] 
+#     orig_labels = [l.to(device) for l in batch[2]]
+#     with torch.no_grad():
+#         loc_gcxgcy, scores = model(orig_images)
+#         boxes, labels, scores = model.detect_objects(loc_gcxgcy, scores, min_score=min_score, max_overlap=max_overlap)
+#     gt_boxes.extend(orig_boxes)
+#     gt_labels.extend(orig_labels)
+#     pred_boxes.extend(boxes)
+#     pred_labels.extend(labels)
+#     pred_scores.extend(scores)
+# AP, mAP, Recall = calc_mAP(gt_boxes, gt_labels, pred_boxes, pred_labels, pred_scores)
+
+
+# print(f"Avg Precision: {AP.item()}")
+# print(f"MeanAvg Precision: {mAP}")
+# print(f"Avg Recall: {torch.mean(Recall).item()}")
+
+
+
+
+
+min_score=0.25
+max_overlap=0.5
+
+
+dataset = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=False,return_orig=True)
+
+for k in tqdm(range(len(os.listdir("ShelfImages/test/")))):
+    img_tensor, og_bboxes, og_labels, og_image = dataset.__getitem__(k)
     
-#     loc_gcxgcy, scores = model(img_tensor.view(-1,3,300,300).to(device))
-#     boxes, labels, scores = model.detect_objects(loc_gcxgcy, scores, min_score=min_score, max_overlap=max_overlap)
+    loc_gcxgcy, scores = model(img_tensor.view(-1,3,300,300).to(device))
+    boxes, labels, scores = model.detect_objects(loc_gcxgcy, scores, min_score=min_score, max_overlap=max_overlap)
     
     
     
 
-#     open_cv_image = np.array(og_image)
+    open_cv_image = np.array(og_image)
 
-#     # Convert RGB to BGR 
-#     open_cv_image = open_cv_image[:, :, ::-1].copy() 
-#     color = (0, 255, 0)  
-#     thickness = 2
+    # Convert RGB to BGR 
+    open_cv_image = open_cv_image[:, :, ::-1].copy() 
+    color = (0, 255, 0)  
+    thickness = 2
 
-#     H,W,_ = open_cv_image.shape
-#     open_cv_image = cv2.resize(open_cv_image,(300,300))
+    H,W,_ = open_cv_image.shape
+    open_cv_image = cv2.resize(open_cv_image,(300,300))
 
-#     boxes = boxes[0].tolist()
-# #     print(boxes)
+    boxes = boxes[0].tolist()
+#     print(boxes)
 
-#     for i in range(len(boxes)):
+    for i in range(len(boxes)):
 
-#         x= (boxes[i][0]*300)
-#         y= (boxes[i][1]*300)
-#         X= (boxes[i][2]*300)-x
-#         Y= (boxes[i][3]*300)-y
-#         open_cv_image = cv2.rectangle(open_cv_image, (int(x),int(y)), (int(X),int(Y)), color, thickness)
+        x= (boxes[i][0]*300)
+        y= (boxes[i][1]*300)
+        X= (boxes[i][2]*300)-x
+        Y= (boxes[i][3]*300)-y
+        open_cv_image = cv2.rectangle(open_cv_image, (int(x),int(y)), (int(X),int(Y)), color, thickness)
 
-#     open_cv_image = cv2.resize(open_cv_image,(W,H))
-#     cv2.imwrite("results/"+str(k)+".jpg", open_cv_image)
+    open_cv_image = cv2.resize(open_cv_image,(W,H))
+    cv2.imwrite("results/"+str(k)+".jpg", open_cv_image)
 
-#     del boxes, labels, scores , img_tensor, og_bboxes, og_labels, og_image, loc_gcxgcy
+    del boxes, labels, scores , img_tensor, og_bboxes, og_labels, og_image, loc_gcxgcy
     

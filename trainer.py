@@ -8,7 +8,6 @@ from torch.optim import SGD
 from ssd import SSD, MultiBoxLoss
 from ssd_utils import calc_mAP
 
-
 config = SSDConfig()
 device = config.DEVICE
 
@@ -55,7 +54,6 @@ def main():
         utils.save_checkpoint(epoch, model, optimizer, config, config.PATH_TO_CHECKPOINT)
     
     
-    
 def train(dataloader, model, criterion, optimizer, epoch):
     model.train()  # training mode enables dropout
     batch_time = utils.AverageMeter()  # forward prop. + back prop. time
@@ -66,11 +64,15 @@ def train(dataloader, model, criterion, optimizer, epoch):
     for i, batch in enumerate(dataloader):
         data_time.update(time.time() - start)
         # Move to default device
+        # images, boxes = augment(batchbounding_boxes)
+
         images = batch[0].to(device)  # (batch_size (N), 3, 300, 300)
         boxes = [b.to(device) for b in batch[1]]
         labels = [l.to(device) for l in batch[2]]
+        # print(type(images))
+        # images, boxes = korniaAug(images, boxes)
         # Forward prop.
-        predicted_locs, predicted_scores = model(images)  # (N, 8732, 4), (N, 8732, n_classes)
+        predicted_locs, predicted_scores = model(images)  # (N, 1940, 4), (N, 1940, n_classes)
         # Loss
         loss = criterion(predicted_locs, predicted_scores, boxes, labels)  # scalar
         # Backward prop.

@@ -13,7 +13,7 @@ import os
 
 # from tensorboardX import SummaryWriter
 from logger import Logger
-fname = "checkpoint_ssd_.300.2.4"
+fname = "checkpoint_ssd_imgaug_.300.1.1"
 log_dir = "runs/"+fname#str(datetime.now().strftime('%m%d%H%M%S'))
 
 if not os.path.exists(log_dir):
@@ -114,7 +114,7 @@ for epoch in tqdm(range(start_epoch, epochs)):
         print('Model Evaluation.', end=' :: ')
         mAP, Recall = eval(model, dataloader_te, 0.6, 0.4)
         data_dict['mAP'] = mAP
-        data_dict['Recall'] = (torch.mean(Recall).item()).item()
+        data_dict['Recall'] = torch.mean(Recall).item()
         
         print('mAP: ', mAP )
         print("Recall: ",Recall)

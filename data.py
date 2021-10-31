@@ -10,6 +10,8 @@ import pandas as pd
 import torchvision.transforms as T
 import torchvision.transforms.functional as FT
 
+from aug import *
+
 # -------------- ---------
 # Transformation Functions
 # -------------- ---------
@@ -141,16 +143,26 @@ class ShelfImageDataset(Dataset):
         # print(type(orig_image))
         split_df = self.df[self.df["names"]==img]
         cls_ls, bbox = split_df["class"].values, split_df[self.bbox_cols].values 
+        
+
+
+        aug_image = np.array(orig_image)
+        aug_image = aug_image[:, :, ::-1].copy() 
+
+        aug_image,bbox = augment(np.array(aug_image), bbox)
+        # (print(aug_image.shape))
+        image = Image.fromarray(np.uint8(aug_image)).convert('RGB')
         # print(bbox)
         boxes = torch.tensor(bbox)
         # print(boxes.shape)
         boxes = utils.xywh_to_xyXY(boxes)
         # rescale image and boxes
         image, boxes = resize(orig_image, boxes, (300,300))
-        # horizontal flip image and boxes with 50% prob (if it's a train sample)
-        if (uniform(0,1)>0.5 and self.train): 
-            image, boxes = hflip(image, boxes)
+        # horizontal flip image and boxes with 80% prob (if it's a train sample)
+        # if (uniform(0,1)>0.9 and self.train): 
+        #     image, boxes = hflip(image, boxes)
         image = imageTransforms(image)
+        # image, boxes = korniaAug(image, boxes)
         label = torch.LongTensor([1]*boxes.size(0))
         if self.return_orig:
             return image, boxes, label, orig_image
