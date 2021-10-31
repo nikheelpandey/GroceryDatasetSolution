@@ -194,19 +194,19 @@ if __name__=="__main__":
     # df = get_dataframe(config.PATH_TO_ANNOTATIONS)
     dataset_tr = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=True)
     dataset_tr.__getitem__(23)
-    # dataloader_tr = DataLoader(dataset_tr,
-    #                         shuffle=True,
-    #                         collate_fn=collate_fn,
-    #                         batch_size=config.TRAIN_BATCH_SIZE,
-    #                         num_workers=config.NUM_DATALOADER_WORKERS)
+    dataloader_tr = DataLoader(dataset_tr,
+                            shuffle=True,
+                            collate_fn=collate_fn,
+                            batch_size=config.TRAIN_BATCH_SIZE,
+                            num_workers=config.NUM_DATALOADER_WORKERS)
 
-    # dataset_te = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=False)
-    # dataloader_te = DataLoader(dataset_te,
-    #                         shuffle=True,
-    #                         collate_fn=collate_fn,
-    #                         batch_size=config.TRAIN_BATCH_SIZE,
-    #                         num_workers=config.NUM_DATALOADER_WORKERS)
+    dataset_te = ShelfImageDataset(df, config.PATH_TO_IMAGES, train=False)
+    dataloader_te = DataLoader(dataset_te,
+                            shuffle=True,
+                            collate_fn=collate_fn,
+                            batch_size=config.TRAIN_BATCH_SIZE,
+                            num_workers=config.NUM_DATALOADER_WORKERS)
 
 
 
-    # print(next(iter(dataloader_tr)))
+    print(next(iter(dataloader_tr)))
