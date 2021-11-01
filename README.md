@@ -21,7 +21,7 @@ class ShelfImageDataset(Dataset):
         self.bbox_cols = ["x", "y","w","h"]
     def __len__(self):
         return len(self.total_imgs)
-```
+
     # def _fix_df(self):
     #     list_images = listdir(self.image_path)
     #     self.df = self.df[self.df.names.isin(list_images)]
@@ -62,3 +62,5 @@ class ShelfImageDataset(Dataset):
             return image, boxes, label, orig_image
         else:
             return image, boxes, label
+
+```
