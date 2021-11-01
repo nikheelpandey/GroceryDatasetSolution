@@ -10,7 +10,7 @@ Dataset Preparation: Not a lot is required to set up the data pipeline. The file
 
 
 
-
+```
 class ShelfImageDataset(Dataset):
     def __init__(self, df, image_path, train=True,return_orig=False):
         self.df = df
@@ -21,7 +21,7 @@ class ShelfImageDataset(Dataset):
         self.bbox_cols = ["x", "y","w","h"]
     def __len__(self):
         return len(self.total_imgs)
-
+```
     # def _fix_df(self):
     #     list_images = listdir(self.image_path)
     #     self.df = self.df[self.df.names.isin(list_images)]
