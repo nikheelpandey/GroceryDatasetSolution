@@ -174,7 +174,7 @@ def calc_mAP(gt_boxes, gt_labels, pred_boxes, pred_labels, pred_scores, mode=Non
 
     
         # Find the mean of the maximum of the precisions corresponding to recalls above the threshold 't'
-        recall_thresholds = torch.arange(start=0.1, end=1.0, step=.1).tolist()
+        recall_thresholds = torch.arange(start=0.5, end=1.0, step=.1).tolist()
         precisions = torch.zeros((len(recall_thresholds)), dtype=torch.float)
         for i, t in enumerate(recall_thresholds):
             recalls_above_t = cumul_recall >= t

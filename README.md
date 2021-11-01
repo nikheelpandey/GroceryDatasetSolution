@@ -64,3 +64,45 @@ class ShelfImageDataset(Dataset):
             return image, boxes, label
 
 ```
+
+
+### Augmentation
+Basic horizontal and vertical flips were applied with a probability of 50%
+
+
+### Detection Network Used
+
+SSD300 with VGG16 as the basic feature extractor.
+
+### Training parameters/hyper-parameters
+
+LEARNING_RATE = 0.01
+USE_PRETRAINED_VGG = True
+NUM_ITERATIONS_TRAIN = 8000 
+set_ratio = .67 ## based on eda 
+FM_ASPECT_RATIO = [[set_ratio],
+                        [set_ratio],
+                        [set_ratio],
+                        [set_ratio],
+                        [set_ratio],
+                        [set_ratio]]
+
+### Anchor Box Tuning
+Aspect ratio set at 0.67
+
+### Loss
+Multiboxloss as described in `ssd.py` is used. Consists of two parts a. location_loss and b. conf_loss.
+
+### Training
+To train the model, refer `train_ssd_single_anchorbox.py`.
+It inherits ssd_config for hyperparameter tuning. Make sure to change the name of your checkpoint file in `ssd_config.py`. 
+
+
+### Evaluation
+
+The script `evaluation.py` runs evaluation on test set. The mAP is calculated using various threshold starting from 0.5 to 1.
+
+
+### Tensorboard
+To view loss, mAP, conf_loss, and loc_loss:
+    - `tensorboard --logdir=runs/`

@@ -54,7 +54,7 @@ config.TRAIN_BATCH_SIZE = 4
 config.LEARNING_RATE = 0.01
 config.USE_PRETRAINED_VGG = True
 config.NUM_ITERATIONS_TRAIN = 8000 
-set_ratio = 1.5
+set_ratio = .67
 config.FM_ASPECT_RATIO = [[set_ratio],
                         [set_ratio],
                         [set_ratio],
