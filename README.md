@@ -6,7 +6,7 @@ To download the dataset and set the repo structure: `sh data_preperation.sh`
  
 
 
-Dataset Preparation: Not a lot is required to set up the data pipeline. The file `data.py` contains the following class:
+Dataset Preparation: The file `data.py` contains the following class over which a dataloader can be fitted:
 
 
 
