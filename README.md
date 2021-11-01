@@ -76,11 +76,11 @@ SSD300 with VGG16 as the basic feature extractor.
 
 ### Training parameters/hyper-parameters
 
-LEARNING_RATE = 0.01
-USE_PRETRAINED_VGG = True
-NUM_ITERATIONS_TRAIN = 8000 
-set_ratio = .67 ## based on eda 
-FM_ASPECT_RATIO = [[set_ratio],
+- LEARNING_RATE = 0.01
+- USE_PRETRAINED_VGG = True
+- NUM_ITERATIONS_TRAIN = 8000 
+- set_ratio = .67 ## based on eda 
+- FM_ASPECT_RATIO = [[set_ratio],
                         [set_ratio],
                         [set_ratio],
                         [set_ratio],
