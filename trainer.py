@@ -59,6 +59,9 @@ def train(dataloader, model, criterion, optimizer, epoch):
     batch_time = utils.AverageMeter()  # forward prop. + back prop. time
     data_time = utils.AverageMeter()  # data loading time
     losses = utils.AverageMeter()  # loss
+    loc_losses = utils.AverageMeter()
+    conf_losses = utils.AverageMeter()
+
     start = time.time()
     # Batches
     for i, batch in enumerate(dataloader):
@@ -74,7 +77,7 @@ def train(dataloader, model, criterion, optimizer, epoch):
         # Forward prop.
         predicted_locs, predicted_scores = model(images)  # (N, 1940, 4), (N, 1940, n_classes)
         # Loss
-        loss = criterion(predicted_locs, predicted_scores, boxes, labels)  # scalar
+        loss, conf_loss_, loc_loss_ = criterion(predicted_locs, predicted_scores, boxes, labels)  # scalar
         # Backward prop.
         optimizer.zero_grad()
         loss.backward()
@@ -82,9 +85,16 @@ def train(dataloader, model, criterion, optimizer, epoch):
         # if grad_clip is not None:
         clipping_value = 1 # arbitrary value of your choosing
         torch.nn.utils.clip_grad_norm(model.parameters(), clipping_value)
+
+
+        clipping_value = 10 # arbitrary value of your choosing
+        torch.nn.utils.clip_grad_norm(loss, clipping_value)
         # Update model
         optimizer.step()
         losses.update(loss.item(), images.size(0))
+        loc_losses.update(loc_loss_.item(), images.size(0))
+        conf_losses.update(conf_loss_.item(), images.size(0))
+
         batch_time.update(time.time() - start)
         
         start = time.time()
@@ -97,7 +107,7 @@ def train(dataloader, model, criterion, optimizer, epoch):
                                                                   batch_time=batch_time,
                                                                   data_time=data_time, loss=losses))
     del predicted_locs, predicted_scores, images, boxes, labels  # free some memory since their histories may be stored
-    return loss.item()
+    return loss.item(), conf_losses.avg, loc_losses.avg
 
 def eval(model, dataloader, min_score=0.5, max_overlap=0.5, return_recall = True):
     model.eval()

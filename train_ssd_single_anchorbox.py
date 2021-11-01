@@ -13,7 +13,13 @@ import os
 
 # from tensorboardX import SummaryWriter
 from logger import Logger
-fname = "checkpoint_ssd_imgaug_.300.1.1"
+
+
+
+config = SSDConfig()
+device = config.DEVICE
+
+fname = config.fname 
 log_dir = "runs/"+fname#str(datetime.now().strftime('%m%d%H%M%S'))
 
 if not os.path.exists(log_dir):
@@ -28,8 +34,10 @@ data_dict["mAP"] = 0.0
 data_dict["Recall"] = 0.0
 
 
-config = SSDConfig()
-device = config.DEVICE
+data_dict["Loc_loss"] =100.
+data_dict["conf_loss"]=100.
+
+
 
 torch.manual_seed(config.seed)
 
@@ -104,9 +112,11 @@ for epoch in tqdm(range(start_epoch, epochs)):
     if epoch in decay_at_epoch:
         utils.adjust_learning_rate(optimizer, config.DECAY_FRAC)
     
-    loss = train(dataloader_tr, model, criterion, optimizer, epoch)
+    loss, conf_loss, loc_loss = train(dataloader_tr, model, criterion, optimizer, epoch)
     
     data_dict["training_loss"] = loss
+    data_dict["Loc_loss"] = loc_loss
+    data_dict["conf_loss"]= conf_loss
     
     if (epoch%5 == 0):
         print('Model checkpoint.', end=' ' )

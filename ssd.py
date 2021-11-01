@@ -414,4 +414,4 @@ class MultiBoxLoss(nn.Module):
         # print(f'Localization loss: {loc_loss} \t \t Conf loss: {conf_loss}')
 
         # TOTAL LOSS
-        return conf_loss + self.alpha * loc_loss
+        return conf_loss + self.alpha * loc_loss, conf_loss, loc_loss

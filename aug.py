@@ -6,45 +6,35 @@ sometimes = lambda aug: iaa.Sometimes(0.5, aug)
 
 
 def augment(image,bounding_boxes):
+    # print()
+    num_box,num_cord = bounding_boxes.shape[0],bounding_boxes.shape[1] 
+    bounding_boxes = bounding_boxes.reshape(1,num_box,num_cord)
 
-    seq = iaa.Sequential([
-        # iaa.Multiply((1.2, 1.5)), # change brightness, doesn't affect BBs
-        # iaa.Affine(
-        #     translate_px={"x": 40, "y": 60},
-        #     scale=(0.7, 0.9)
-        # ),
-        iaa.Fliplr(0.8), # horizontally flip 80% of all images
-        iaa.Flipud(0.5), # vertically flip 20% of all images
-        # iaa.SomeOf((0, 5),
-        #     [
-        #     iaa.AverageBlur(k=(2, 11)),
-
-        #     iaa.Invert(0.05, per_channel=True), # invert color channels
-
-        #     # Add a value of -10 to 10 to each pixel.
-        #     iaa.Add((-10, 10), per_channel=0.5),
-
-        #     # Change brightness of images (50-150% of original value).
-        #     iaa.Multiply((0.5, 1.5), per_channel=0.5),
-
-        #     # Improve or worsen the contrast of images.
-        #     iaa.LinearContrast((0.5, 2.0), per_channel=0.5),
-
-        #     # Convert each image to grayscale and then overlay the
-        #     # result with the original with random alpha. I.e. remove
-        #     # colors with varying strengths.
-        #     iaa.Grayscale(alpha=(0.0, 1.0)),
-        #     ]),
-        # # In some images move pixels locally around (with random
-        # # strengths).
-        
-
-
-        # crop some of the images by 0-10% of their height/width
-        
-        ])
-
-    return image, bounding_boxes
+    seq = iaa.Sequential(
+        [
+        # apply the following augmenters to most images
+        iaa.Fliplr(0.5), # horizontally flip 50% of all images
+        # iaa.Flipud(0.5), # vertically flip 20% of all images
+        # crop images by -5% to 10% of their height/width
+        # sometimes(iaa.CropAndPad(
+        # percent=(-0.05, 0.1),
+        # pad_mode=ia.ALL,
+        # pad_cval=(0, 255)
+        # )),
+        # sometimes(iaa.Affine(
+        # scale={"x": (0.8, 1.2), "y": (0.8, 1.2)}, # scale images to 80-120% of their size, individually per axis
+        # translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)}, # translate by -20 to +20 percent (per axis)
+        # rotate=(-45, 45), # rotate by -45 to +45 degrees
+        # shear=(-16, 16), # shear by -16 to +16 degrees
+        # order=[0, 1], # use nearest neighbour or bilinear interpolation (fast)
+        # cval=(0, 255), # if mode is constant, use a cval between 0 and 255
+        # mode=ia.ALL # use any of scikit-image's warping modes (see 2nd image from the top for examples)
+        # )),
+        ],
+        random_order=True
+        )
+    image, bounding_boxes = seq(image=image, bounding_boxes=bounding_boxes)
+    return image, bounding_boxes.reshape(num_box,num_cord)
 
 
 
