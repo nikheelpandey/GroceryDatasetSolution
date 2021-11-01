@@ -19,8 +19,6 @@ class ShelfImageDataset(Dataset):
         self.image_path = image_path+'train/' if train else image_path+'test/'
         self.total_imgs = listdir(self.image_path)
         self.bbox_cols = ["x", "y","w","h"]
-        
-        
     def __len__(self):
         return len(self.total_imgs)
 
