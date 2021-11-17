@@ -1,4 +1,5 @@
-# GroceryDatasetSolution
+# 1 cell per feature map for object detection
+
 This repository contains an implementation of SSD300.
 The goal is to achieve maximum mAP while using a single aspect ratio per feature map. 
 
@@ -106,3 +107,8 @@ The script `evaluation.py` runs evaluation on test set. The mAP is calculated us
 ### Tensorboard
 To view loss, mAP, conf_loss, and loc_loss:
     - `tensorboard --logdir=runs/`
+    
+### TODO:
+- Increase the recall 
+- Augmentation pipeline
+- EDA for bounding box evaluation 
